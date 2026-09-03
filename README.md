@@ -2,7 +2,7 @@
 
 Use pull request labels to update semantic version tags.
 
-- Labels `major`, `minor`, or `patch` update corresponding part of semantic version
+- Labels `semver:major`, `semver:minor`, or `semver:patch` update the corresponding part of semantic version
 - Defaults to `patch` if no label is specified
 - Automatic tracking of floating major tag to latest tag, i.e. `v1` -> `v1.2.3`
 
@@ -49,6 +49,7 @@ jobs:
 
 > [!NOTE]
 > - Ensure `actions/checkout` uses `fetch-depth: 0`
+> - GitHub-hosted runners already include `python3`; self-hosted runners need Python 3 available on `PATH`
 > - Requires workflow permissions: `contents: write` to be able to write the semantic version tag
 > - Requires `pull-requests: read` when `version-bump` is empty (PR-label resolution path)
 > - Must configure workflow `concurrency` with `cancel-in-progress: false` to avoid tag collisions
@@ -65,9 +66,11 @@ jobs:
 
 ## Outputs
 
-- `new-tag`: computed next tag (for example `v1.4.2`)
-- `previous-tag`: latest existing tag used as the bump source
-- `version-bump-used`: resolved bump type actually applied
+| Output | Description |
+| --- | --- |
+| `new-tag` | Computed next tag (for example `v1.4.2`). |
+| `previous-tag` | Latest existing tag used as the bump source. |
+| `version-bump-used` | Resolved bump type actually applied. |
 
 ## How it works
 
@@ -75,6 +78,6 @@ The version always follows `major`.`minor`.`patch` format. Each time this action
 
 - Fetches the latest semantic-version tag matching the prefix (`vX.Y.Z`). If none exist, starts from `v0.0.0`
 - If `version-bump` is provided, it is used directly
-- Otherwise, the action checks labels (`major`, `minor`, `patch`) on the PR associated with the commit
+- Otherwise, the action checks labels (`semver:major`, `semver:minor`, `semver:patch`) on the PR associated with the commit
 - If no matching label is found, it defaults to `patch`
 - Selected part of tag is bumped
